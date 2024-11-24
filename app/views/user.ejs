@@ -1,0 +1,41 @@
+<%- include('header') %>
+    <%- include('navbar') %>
+        <div class="card mt-3 shadow ms-3 me-3">
+            <div class="card-body">
+                <div class="card-title fs-3 special-elite-regular text-success">User</div>
+                <a class="btn btn-outline-primary mt-3 " href="/addUser">+Add</a>
+                <div class="table-responsive">
+                <table class="table table-hover mt-3">
+                    <thead>
+                        <tr class="text-success">
+                            <th width="170px"></th>
+                            <th>Name</th>
+                            <th width="200px">Username</th>
+                            <th width="200px">Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <% users.forEach((user)=> { %>
+                                <td>
+                                    <a class="btn btn-primary" href="/editUser/<%= user.id %>">Edit</a>
+                                    <a class="btn btn-danger" href="/deleteUser/<%= user.id %>"
+                                        onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                                </td>
+                                <td>
+                                    <%= user.name %>
+                                </td>
+                                <td>
+                                    <%= user.usr %>
+                                </td>
+                                <td>
+                                    <%= user.level %>
+                                </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        <%- include('footer') %>

@@ -1,0 +1,76 @@
+<%- include('header') %>
+    <%- include('navbar') %>
+        <div class="container mt-2">
+            <!-- เพิ่ม enctype="multipart/form-data" เพื่อให้สามารถอัพโหลดไฟล์ได้ -->
+            <form method="post" enctype="multipart/form-data">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="card-title fs-5 special-elite-regular">Add/Edit Book</div>
+                        <div class="mt-3 text-center">
+                            <label>Upload Image</label>
+                            <% if (book.img !=undefined) { %>
+                                <div class="mt-2"><img src="../images/books/<%= book.img %>" width="200px"></div>
+                                <% } %>
+                                    <div>
+                                        <input type="file" name="img" class="form-control mt-4" />
+                                    </div>
+                        </div>
+                        <div class="mt-3">
+                            <label>Book Tag</label>
+                            <select name="group_book_id" class="form-control">
+                                <% groupBooks.forEach((groupBook)=> { %>
+                                    <option value="<%= groupBook.id %>" <% if (book.group_book_id==groupBook.id) { %>
+                                        selected
+                                        <% } %>
+                                            >
+                                            <%= groupBook.name_tag %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+                        <div class="mt-3">
+                            <label>ISBN</label>
+                            <input type="text" name="isbn" class="form-control" value="<%= book.isbn %>" pattern="[0-9]{0,6}" maxlength="6"  title="Please enter exactly 6 digits."  required />
+                        </div>
+                        <div class="mt-3">
+                            <label>Author</label>
+                            <input type="text" name="author" class="form-control" value="<%= book.author %>" required />
+                        </div>
+                        <div class="mt-3">
+                            <label>Book name</label>
+                            <input type="text" name="book_name" class="form-control" value="<%= book.book_name %>"
+                                required />
+                        </div>
+                        <div class="mt-3">
+                            <label>Book Detail</label>
+                            <input type="text" name="detail" class="form-control" value="<%= book.detail %>" />
+                        </div>
+                                                <div class="mt-3">
+                            <label>Book Price</label>
+                            <input type="text" name="price" class="form-control" value="<%= book.price %>" />
+                        </div>
+                                                <div class="mt-3">
+                            <label>Book InStock</label>
+                            <input type="text" name="stock" class="form-control" value="<%= book.stock %>" />
+                        </div>
+                        <div class="mt-3">
+                            <label>Book Status</label>
+                            <select name="status" class="form-control">
+                                <option value="Available" <% if (book.status=='Available' ) { %> selected <% } %>
+                                        >Available</option>
+                                <option value="Borrowed" <% if (book.status=='Borrowed' ) { %> selected <% } %>>Borrowed
+                                </option>
+                                <option value="Lost" <% if (book.status=='Lost' ) { %> selected <% } %>>Lost</option>
+                            </select>
+                        </div>
+                        <div class="mt-3">
+                            <a type="button" class="btn btn-md btn-neutral mt-3 me-2" href="/book">Cancel</a>
+                            <button type="submit" class="btn btn-info"
+                                onclick="return confirm('Confirm ?')">Save</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <%- include('footer') %>

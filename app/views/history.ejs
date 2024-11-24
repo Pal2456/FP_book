@@ -1,0 +1,232 @@
+<%- include('header') %>
+
+    <%- include('navbar') %>
+
+        <main class="card ms-3 me-3 mt-3 bg-white shadow" style="height: 100%;">
+            <div class="card-body">
+                <h2 class="mt-2 ms-2"><span class="special-elite-regular text-success">HISTORY</span>
+                    <span class="float-end">
+                        <a class="btn btn-danger " href="/deleteHistory"
+                            onclick="return confirm('Are you sure to Clear All History ?')">CLEAR ALL HISTORY</a>
+                    </span>
+                </h2>
+                <form class="mt-4" action="/history" method="GET">
+                    <div class="mb-3">
+                        <label for="historyType" class="form-label">Select History Type:</label>
+                        <select class="form-select" id="historyType" name="historyType">
+                            <option value="all">Display All</option>
+                            <option value="borrow">Borrow History</option>
+                            <option value="reserve">Reserve History</option>
+                        </select>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                <table id="allHistory" class="table table-hover" style="display: block;">
+                    <thead class="text-dark">
+                        <tr class="text-success">
+                            <th width="240px" scope="col"></th>
+                            <th scope="col" style="width: 150px;">Book</th>
+                            <th width="300px" scope="col">Book name</th>
+                            <th width="170px" scope="col">Real-time Status</th>
+                            <th width="170px" scope="col">Interaction</th>
+                            <th width="270px" scope="col">Borrow</th>
+                            <th width="270px" scope="col">Return</th>
+                            <th width="270px" scope="col">Reserve</th>
+                            <th width="270px" scope="col">Pick up</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% let allUserHistory=BHUserHistory.concat(RHUserHistory); %>
+                            <% if(allUserHistory && allUserHistory.length> 0) { %>
+                                <% allUserHistory.forEach((usrH)=> { %>
+                                    <tr>
+                                        <td>
+                                            <a class="btn btn-primary btn-sm" href="/borrow/<%= usrH.id %>">Borrow</a>
+                                            <a class="btn btn-warning btn-sm" href="/reserve/<%= usrH.id %>">Reserve</a>
+                                            <a class="btn btn-danger btn-sm"
+                                                href="/deleteHistory/<%= usrH.history_id %>"
+                                                onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                                        </td>
+                                        <td scope="row"><img class="rounded shadow-sm border border-2 border-white"
+                                                src="./images/books/<%= usrH.img %>" width="200px"></td>
+                                        <td>
+                                            <h4>
+                                                <%= usrH.book_name %>
+                                            </h4>
+                                            <p>
+                                                <%= usrH.detail %>
+                                            </p>
+                                        </td>
+                                        <td
+                                            class="<%= usrH.status === 'Available' ? 'text-success' : (usrH.status === 'Reserved' ? 'text-warning' : 'text-danger') %>">
+                                            <%= usrH.status %>
+                                        </td>
+                                        <% if(usrH.borrow_history_date !=='' ) { %>
+                                            <td>
+                                                <%= usrH.borrow_history_status %>
+                                            </td>
+                                            <% } else { %>
+                                                <td>
+                                                    <%= usrH.reserve_history_status %>
+                                                </td>
+                                                <% } %>
+                                                    <td>
+                                                        <%= usrH.borrow_history_date %>
+                                                    </td>
+                                                    <td>
+                                                        <%= usrH.return_history_date %>
+                                                    </td>
+                                                    <td>
+                                                        <%= usrH.reserve_history_date %>
+                                                    </td>
+                                                    <td>
+                                                        <%= usrH.pickup_history_date %>
+                                                    </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="6">No history available</td>
+                                            </tr>
+                                            <% } %>
+                    </tbody>
+                </table>
+                </div>
+                <div class="table-responsive">
+                <table id="borrowHistory" class="table table-hover" style="display: none;">
+                    <thead class="text-dark">
+                        <tr>
+                            <th width="250px" scope="col"></th>
+                            <th scope="col" style="width: 150px;">Book</th>
+                            <th width="300px" scope="col">Book name</th>
+                            <th width="270px" scope="col">Borrow</th>
+                            <th width="270px" scope="col">Return</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(borrowUserHistory && borrowUserHistory.length> 0){ %>
+                            <% borrowUserHistory.forEach((borrowH)=> { %>
+                                <% if(borrowH.borrow_history_status==='Borrowed' ){ %>
+                                    <tr>
+                                        <td>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/borrow/<%= borrowH.id %>">Borrow</a>
+                                            <a class="btn btn-warning btn-sm"
+                                                href="/reserve/<%= borrowH.id %>">Reserve</a>
+                                            <a class="btn btn-danger btn-sm"
+                                                href="/deleteHistory/<%= borrowH.history_id%>"
+                                                onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                                        </td>
+                                        <td scope="row"><img class="rounded shadow-sm border border-2 border-white"
+                                                src="./images/books/<%= borrowH.img %>" width="200px"></td>
+                                        <td>
+                                            <h4>
+                                                <%= borrowH.book_name %>
+                                            </h4>
+                                            <p>
+                                                <%= borrowH.detail %>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <%= borrowH.borrow_date %>
+                                        </td>
+                                        <td>
+                                            <%= borrowH.return_date %>
+                                        </td>
+                                        <% } %>
+                                            <% }) %>
+                                    </tr>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="6">No history available</td>
+                                        </tr>
+                                        <% } %>
+
+
+                    </tbody>
+                </table>
+                </div>
+                <div class="table-responsive">
+                <table id="reserveHistory" class="table table-hover" style="display: none;">
+                    <thead class="text-dark">
+                        <tr>
+                            <th width="250px" scope="col"></th>
+                            <th scope="col" style="width: 150px;">Book</th>
+                            <th width="300px" scope="col">Book name</th>
+                            <th width="270px" scope="col">Reserve</th>
+                            <th width="270px" scope="col">Pick up</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(reserveUserHistory && reserveUserHistory.length> 0){ %>
+                            <% reserveUserHistory.forEach((reserveH)=> { %>
+                                <% if(reserveH.reserve_history_status==='Reserved' ){ %>
+                                    <tr>
+                                        <td>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="/borrow/<%= reserveH.id %>">Borrow</a>
+                                            <a class="btn btn-warning btn-sm"
+                                                href="/reserve/<%= reserveH.id %>">Reserve</a>
+                                            <a class="btn btn-danger btn-sm"
+                                                href="/deleteHistory/<%= reserveH.history_id%>"
+                                                onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                                        </td>
+                                        <td scope="row"><img class="rounded shadow-sm border border-2 border-white"
+                                                src="./images/books/<%= reserveH.img %>" width="200px"></td>
+                                        <td>
+                                            <h4>
+                                                <%= reserveH.book_name %>
+                                            </h4>
+                                            <p>
+                                                <%= reserveH.detail %>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <%= reserveH.reserve_date %>
+                                        </td>
+                                        <td>
+                                            <%= reserveH.pickup_date %>
+                                        </td>
+                                        <% } %>
+                                            <% }) %>
+                                    </tr>
+
+
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="6">No history available</td>
+                                        </tr>
+                                        <% } %>
+
+
+                    </tbody>
+                </table>
+                </div>
+
+            </div>
+        </main>
+        <script>
+            document.getElementById('historyType').addEventListener('change', function () {
+                var selectedValue = this.value;
+
+                if (selectedValue === 'borrow') {
+                    document.getElementById('borrowHistory').style.display = 'block';
+                    document.getElementById('reserveHistory').style.display = 'none';
+                    document.getElementById('allHistory').style.display = 'none';
+
+                } else if (selectedValue === 'reserve') {
+                    document.getElementById('reserveHistory').style.display = 'block';
+                    document.getElementById('borrowHistory').style.display = 'none';
+                    document.getElementById('allHistory').style.display = 'none';
+                } else if (selectedValue === 'all') {
+                    document.getElementById('allHistory').style.display = 'block';
+                    document.getElementById('borrowHistory').style.display = 'none';
+                    document.getElementById('reserveHistory').style.display = 'none';
+                }
+            });
+        </script>
+        <%- include('footer') %>
