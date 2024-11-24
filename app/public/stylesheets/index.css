@@ -1,35 +1,51 @@
 /* Login / Register Image Background */
 #background-img {
-  background-image: url("../images/background.jpeg"); /* กำหนด URL ของรูปภาพ */
-  background-size: cover; /* กำหนดให้รูปภาพขยายและปรับขนาดให้เต็มพื้นที่ */
-  background-position: center; /* กำหนดตำแหน่งของรูปภาพที่จะแสดงตรงกลาง */
-  height: 100vh; /* กำหนดความสูงของพื้นหลังให้เต็มหน้าจอ */
-  margin: 0; /* กำหนดให้ไม่มีช่องว่างรอบขอบของเอกสาร */
-  display: flex; /* กำหนดให้ข้อความอยู่ตรงกลาง */
-  justify-content: center; /* จัดตำแหน่งให้ข้อความตรงกลางแนวนอน */
-  align-items: center; /* จัดตำแหน่งให้ข้อความตรงกลางแนวตั้ง */
+  background-image: url("../images/background.jpeg");
+  /* กำหนด URL ของรูปภาพ */
+  background-size: cover;
+  /* กำหนดให้รูปภาพขยายและปรับขนาดให้เต็มพื้นที่ */
+  background-position: center;
+  /* กำหนดตำแหน่งของรูปภาพที่จะแสดงตรงกลาง */
+  height: 100vh;
+  /* กำหนดความสูงของพื้นหลังให้เต็มหน้าจอ */
+  margin: 0;
+  /* กำหนดให้ไม่มีช่องว่างรอบขอบของเอกสาร */
+  display: flex;
+  /* กำหนดให้ข้อความอยู่ตรงกลาง */
+  justify-content: center;
+  /* จัดตำแหน่งให้ข้อความตรงกลางแนวนอน */
+  align-items: center;
+  /* จัดตำแหน่งให้ข้อความตรงกลางแนวตั้ง */
 }
 
 /* Main Home Page CSS Code*/
 /* Attribute*/
-h2[title="login"] { /* กำหนดให้ h2 ที่มี title เป็น login มีสีดำ และ font ขนาด 30px */
+h2[title="login"] {
+  /* กำหนดให้ h2 ที่มี title เป็น login มีสีดำ และ font ขนาด 30px */
   color: black;
   font-size: 30px;
 }
+
 /* Type Selector*/
-h2 { /* กำหนดให้ h2 มีสีเขียว และ font ขนาด 30px และจัดตำแหน่งข้อความตรงกลาง */
+h2 {
+  /* กำหนดให้ h2 มีสีเขียว และ font ขนาด 30px และจัดตำแหน่งข้อความตรงกลาง */
   color: green;
   font-size: 30px;
   text-align: center;
 }
+
 /* Psuedo Element Selector*/
-h2::first-line { /* กำหนดให้บรรทัดแรกของ h2 มีเส้นใต้*/
+h2::first-line {
+  /* กำหนดให้บรรทัดแรกของ h2 มีเส้นใต้*/
   text-decoration: underline;
 
 }
+
 .custom-search-bar {
-  width: 500px; /* กำหนดความยาวของ Search bar */
-  padding-left: 20px; /* กำหนดระยะห่างระหว่างตัวหนังสือและขอบของ Search bar (ข้างใน Search bar)*/
+  width: 500px;
+  /* กำหนดความยาวของ Search bar */
+  padding-left: 20px;
+  /* กำหนดระยะห่างระหว่างตัวหนังสือและขอบของ Search bar (ข้างใน Search bar)*/
 }
 
 .special-elite-regular {
@@ -37,6 +53,7 @@ h2::first-line { /* กำหนดให้บรรทัดแรกของ
   font-weight: 400;
   font-style: normal;
 }
+
 .light-green {
   background-color: #dcf3de;
 }
@@ -51,22 +68,23 @@ h2::first-line { /* กำหนดให้บรรทัดแรกของ
   border-color: green;
   color: green;
 }
+
 /*Pseudo-Class selector*/
 
 .page-link:hover {
   background-color: #dcf3de;
-  border-color: green;
-  color: green;
+  border-color: purple;
+  color: purple;
 }
 
 .page-item.active .page-link {
-  background-color: green;
-  border-color: green;
+  background-color: darkturquoise;
+  border-color: darkturquoise;
   color: white;
 }
 
 
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
   .custom-search-bar {
     width: 100%;
     padding-left: 10px;
