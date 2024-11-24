@@ -1,34 +1,71 @@
 <%- include('header') %>
 
-<body id="background-img" >
-  <div class="container my-auto">
-      <div class="card shadow-lg p-3 mb-5 bg-body rounded" style="width: 100%; margin-left: 30px; margin-bottom: 50px;">
-      <div class="card-body">
-        <div class="text-center">
-          <h2 title="login">LOG IN</h2>
-          <h4>Have an Account?</h4>
+  <body id="background-img">
+    <!-- Main Container -->
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+      <!-- Login Container -->
+      <div class="row border rounded-5 p-3 bg-white shadow box-area">
+        <!-- Left Box -->
+        <div class="col-md-6 rounded-5 d-flex justify-content-center align-items-center flex-column left-box"
+          style="background: #103cbe;">
+          <div class="featured-image">
+            <img src="/public/images/book-icon.png" alt="Bookstore Image" class="img-fluid rounded">
+          </div>
+          <!-- Text Container -->
+          <div class="text-center mt-3">
+            <p class="text-white fs-2 mb-2" style="font-family: 'Courier New', Courier, monospace; font-weight: 600;">
+              Purely
+            </p>
+            <small class="text-white text-wrap"
+              style="width: 17rem;font-family: 'Courier New', Courier, monospace;">Book shopping</small>
+          </div>
         </div>
-        <form method="post" action="/login" style="margin-top: 20px;">
-          <div class="form-group">
-            <label class="text-success">Username</label>
-            <input type="text" name="usr" class="form-control rounded-pill padding-left" style="margin-top: 10px;"
-              placeholder="Enter Username" required>
+
+        <!-- Right Box -->
+        <div class="col-md-6 right-box">
+          <div class="row align-items-center">
+            <div class="header-text mb-4">
+              <h2 class="text-primary">Hello, Again</h2>
+              <p>We are happy to have you back.</p>
+            </div>
+            <form method="post" action="/login">
+              <!-- Username Input -->
+              <div class="input-group mb-3">
+                <input type="text" name="usr" class="form-control form-control-lg bg-light fs-6" placeholder="Username"
+                  required>
+              </div>
+
+              <!-- Password Input -->
+              <div class="input-group mb-3">
+                <input type="password" name="pwd" class="form-control form-control-lg bg-light fs-6"
+                  placeholder="Password" required>
+              </div>
+
+              <!-- Remember Me and Forgot Password -->
+              <div class="input-group mb-3 d-flex justify-content-between">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="rememberMe">
+                  <label for="rememberMe" class="form-check-label text-secondary"><small>Remember Me</small></label>
+                </div>
+                <div>
+                  <small><a href="/forgotPassword" class="text-decoration-none">Forgot Password?</a></small>
+                </div>
+              </div>
+
+              <!-- Login Button -->
+              <div class="input-group mb-3">
+                <button type="submit" class="btn btn-lg btn-primary w-100 fs-6">Login</button>
+              </div>
+            </form>
+
+            <!-- Sign Up Link -->
+            <div class="row">
+              <small>Don't have an account? <a href="/register" class="text-decoration-none">Sign up</a></small>
+            </div>
           </div>
-          <div class="form-group" style="margin-top: 20px;">
-            <label class="text-success">Password</label>
-            <input type="password" name="pwd" class="form-control rounded-pill padding-left" style="margin-top: 10px;"
-              placeholder="Password" required>
-          </div>
-          <div class="mt-3 ps-2">
-            <a href="/forgotPassword">Forgot Password?</a>
-          </div>
-          <%- include('normalms') %>
-          <button type="submit" class="btn btn-outline-success rounded-pill" style="width: 100%; margin-top: 20px;">Log-in</button>
-        </form>
-        <div class="text-center" style="margin-top: 5px;"> - or - </div>
-        <a href="/register" type="register" class="btn btn-outline-secondary rounded-pill" style="width: 100%; margin-top: 5px;">Sign-up</a>
+        </div>
       </div>
     </div>
-  </div>
-    
-    <%- include('footerindex') %> 
+
+    <%- include('footerindex') %>
+  </body>
