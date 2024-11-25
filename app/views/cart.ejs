@@ -50,13 +50,15 @@
 
         <div class="text-end mt-3">
           <h4>Total Books: <%= totalQuantity %> | Total Price: <%= totalPrice.toFixed(2) %> THB</h4>
-
-          
-          <form id="checkout-form" action="/create-checkout-session" method="POST" class="d-flex flex-column align-items-end">
-            <input id="coupon" type="text" class="form-control w-25 mb-2" name="couponCode" placeholder="Enter Coupon Code" />
-            <button type="submit" class="btn btn-success">Proceed to Checkout</button>
+           <!-- Payment Simulation Section -->
+          <form action="/complete-payment" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-success">Simulate Complete Payment</button>
+          </form>
+          <form action="/fail-payment" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger">Simulate Failed Payment</button>
           </form>
         </div>
+        
       <% } else { %>
         <p class="text-center mt-5">
           Your cart is empty. <a href="/home" class="text-success">Continue browsing</a>
