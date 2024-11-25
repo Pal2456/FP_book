@@ -1123,6 +1123,22 @@ router.get("/deleteReserveHistory/:id", (req, res) => {
   });
 });
 
+// Get book info by ID
+router.get('/bookinfo/:id', async (req, res) => {
+  const bookId = req.params.id;
+  try {
+    const [book] = await db.query('SELECT * FROM books WHERE id = ?', [bookId]);
+    if (book) {
+      res.render('bookinfo', { book });
+    } else {
+      res.redirect('/home'); // Redirect to home if book not found
+    }
+  } catch (err) {
+    console.error(err);
+    res.redirect('/home');
+  }
+});
+
 router.post("/add-to-cart", (req, res) => {
   // add-to-cart เพิมหนังสือลงในตะกร้าสินค้า
   
