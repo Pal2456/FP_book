@@ -1,0 +1,38 @@
+<%- include('header') %>
+    <%- include('navbar') %>
+
+        <main>
+            <section class="container bookinf my-5 pt-5">
+                <div class="content-box">
+                    <a href="/home" class="btn btn-secondary mb-4">Back to Home</a>
+                    <div class="row mt-15">
+                        <div class="col-lg-5 col-md-12 col-12">
+                            <img class="img-fluid w-100" src="/images/books/<%= book.img %>"
+                                alt="<%= book.book_name %>">
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>Home / <%= book.category %>
+                            </h6>
+                            <h3 class="py-4">
+                                <%= book.book_name %>
+                            </h3>
+                            <h2>
+                                <%= book.price %> THB
+                            </h2>
+                            <form action="/add-to-cart" method="POST" class="d-inline">
+                                <input type="number" name="quantity" value="1" class="form-control d-inline-block"
+                                    style="width: 80px;">
+                                <input type="hidden" name="bookId" value="<%= book.id %>">
+                                <button type="submit" class="btn btn-sm btn-primary fs-6">Add To Cart</button>
+                            </form>
+                            <h4 class="mt-5 mb-5">Book Details</h4>
+                            <span>
+                                <%= book.detail %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <%- include('footer') %>

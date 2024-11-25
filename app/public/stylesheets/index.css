@@ -35,11 +35,7 @@ h2 {
 }
 
 /* Psuedo Element Selector*/
-h2::first-line {
-  /* กำหนดให้บรรทัดแรกของ h2 มีเส้นใต้*/
-  text-decoration: underline;
 
-}
 
 .custom-search-bar {
   width: 500px;
