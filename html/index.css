@@ -26,4 +26,13 @@
     font-weight: 400;
     font-style: normal;
 }
+.carousel-control-prev-icon {
+    background-color: green; /* Blue color */
+    border-radius: 50%; /* Optional: Make it circular */
+  }
   
+  /* Change the color of the right arrow */
+  .carousel-control-next-icon {
+    background-color: green; /* Green color */
+    border-radius: 50%; /* Optional: Make it circular */
+  }
