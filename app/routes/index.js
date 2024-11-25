@@ -16,8 +16,8 @@ let secretCode = process.env.SECRET_CODE;
 let dayFormat = process.env.DAY_FORMAT;
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // ใช้ dotenv เพื่อเรียกใช้งานไฟล์ .env ที่เก็บข้อมูลที่เป็นค่า const ที่ไม่ควรเปิดเผย
-
-
+const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 
