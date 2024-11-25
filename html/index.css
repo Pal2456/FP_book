@@ -36,3 +36,8 @@
     background-color: green; /* Green color */
     border-radius: 50%; /* Optional: Make it circular */
   }
+
+.card-text{
+    margin: 0; /* Removes margins between paragraphs */
+    line-height: 1.5;
+  }
