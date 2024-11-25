@@ -19,7 +19,7 @@
                                     <th width="">Quantity</th>
                                     <th>Coupon Code</th>
                                     <th width="">Discount</th>
-                                    <th width="">FreeBook ID</th>
+                                    
 
                                 </tr>
                             </thead>
@@ -59,13 +59,7 @@
                                         <td>
                                             <%= promotion.discount %>
                                         </td>
-                                        <td>
-                                            <% if (promotion.book_id !=null) { %>
-                                                <%= promotion.book_id %>
-                                                    <% } else { %>
-                                                        No free book
-                                                        <% } %>
-                                        </td>
+                                       
                                 </tr>
                                 <% }); %>
                             </tbody>

@@ -1245,6 +1245,7 @@ router.post("/remove-cart", (req, res) => {
 
 
 
+
 router.post("/create-checkout-session", async (req, res) => {
   // สร้าง checkout session สำหรับการชำระเงินกับ Stripe
   //1. ตรวจสอบว่าตะกร้าสินค้าว่างหรือไม่
@@ -1407,6 +1408,18 @@ router.post("/create-checkout-session", async (req, res) => {
     res.status(500).send("An error occurred while creating a session.");
   }
 });
+
+
+
+
+// Simulate Failed Payment
+router.post("/fail-payment", (req, res) => {
+  req.flash("error", "Payment failed. Please try again.");
+  res.redirect("/cart");
+});
+
+
+
 
 
 // ใช้ Stripe CLI สำหรับการทดสอบ Webhook 
