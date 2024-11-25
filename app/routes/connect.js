@@ -3,7 +3,7 @@ let conn = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root",
-  database: "db_library",
+  database: "db_siit",
 
   /*
   host: "localhost",
