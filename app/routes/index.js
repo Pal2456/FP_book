@@ -1069,7 +1069,7 @@ router.get("/borrowHistory", (req, res) => {
 });
 
 //ลบข้อมูลการยืมทั้งหมดในระบบและแสดงผลหน้า "borrowHistory"
-router.get("/deleteborrowHistory", (req, res) => {
+/*router.get("/deleteborrowHistory", (req, res) => {
   let sql = "DELETE FROM tb_borrow";
   conn.query(sql, (err, result) => {
     if (err) throw err;
@@ -1086,7 +1086,7 @@ router.get("/deleteborrowHistory/:id", (req, res) => {
     res.redirect("/borrowHistory");
   });
 });
-//isLogin เพื่อตรวจสอบว่าผู้ใช้เข้าสู่ระบบอยู่หรือไม่ และ fetchGroupBooks เพื่อดึงข้อมูลกลุ่มหนังสือจาก database
+//isLogin เพื่อตรวจสอบว่าผู้ใช้เข้าสู่ระบบอยู่หรือไม่ และ fetchGroupBooks เพื่อดึงข้อมูลกลุ่มหนังสือจาก database*/
 
 router.get("/reserveHistory", (req, res) => {
   let sql =
