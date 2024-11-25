@@ -1245,10 +1245,73 @@ router.post("/remove-cart", (req, res) => {
 
 
 
-router.post("/complete-payment", async (req, res) => {
-  req.flash("success", "Payment completed successfully.");
-  res.redirect("/cart");
+router.post("/create-checkout-session", async (req, res) => {
+  try {
+    const conn = require("./connect2");
+    const cart = req.session.cart || []; // Get cart from session
+
+    // Validate cart is not empty
+    if (cart.length === 0) {
+      req.flash("error", "Your cart is empty.");
+      return res.redirect("/cart");
+    }
+
+    // Fetch book details from the database
+    const bookIds = cart.map((item) => item.bookId);
+    const [books] = await conn.query("SELECT * FROM tb_book WHERE id IN (?)", [bookIds]);
+
+    if (!books || books.length === 0) {
+      req.flash("error", "Could not fetch books. Please try again.");
+      return res.redirect("/cart");
+    }
+
+    let totalPrice = 0;
+
+    // Calculate total price
+    cart.forEach((cartItem) => {
+      const book = books.find((b) => b.id === cartItem.bookId);
+      if (book) {
+        totalPrice += parseFloat(book.price) * cartItem.quantity;
+      }
+    });
+
+    // Save order to the database
+    const [orderResult] = await conn.query(
+      "INSERT INTO tb_order (user_id, total_price, created_at) VALUES (?, ?, NOW())",
+      [req.session.user.id, totalPrice]
+    );
+    const orderId = orderResult.insertId;
+
+    // Save order items
+    for (const cartItem of cart) {
+      const book = books.find((b) => b.id === cartItem.bookId);
+      await conn.query(
+        "INSERT INTO tb_order_items (order_id, book_id, quantity, price) VALUES (?, ?, ?, ?)",
+        [orderId, book.id, cartItem.quantity, book.price]
+      );
+
+      // Update book stock
+      await conn.query("UPDATE tb_book SET stock = stock - ? WHERE id = ?", [
+        cartItem.quantity,
+        book.id,
+      ]);
+    }
+
+    // Clear cart after successfully saving the order
+    req.session.cart = [];
+    req.session.totalQuantity = 0;
+
+    req.flash("success", "Order placed successfully.");
+    res.redirect("/cart");
+  } catch (error) {
+    console.error("Error processing order:", error);
+    req.flash("error", "An error occurred while processing your order.");
+    res.redirect("/cart");
+  }
 });
+
+
+
 
 // Simulate Failed Payment
 router.post("/fail-payment", (req, res) => {
