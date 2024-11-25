@@ -663,14 +663,14 @@ router.post("/addBook", (req, res) => {
       //เพิ่มข้อมูลหนังสือใหม่ลงใน database และแสดงผลหน้า book
       fs.copyFile(filePath, newPath, () => {
         let sql =
-          "INSERT INTO tb_book(group_book_id, isbn, author, book_name, detail,status, img,price,stock) VALUES(?, ?, ?, ?, ?, ?, ?,?,?)";
+          "INSERT INTO tb_book(group_book_id, isbn, author, book_name, detail, img,price,stock) VALUES(?, ?, ?, ?, ?, ?,?,?)";
         let params = [
           fields["group_book_id"],
           fields["isbn"],
           fields["author"],
           fields["book_name"],
           fields["detail"],
-          fields["status"],
+          
           file.img[0].originalFilename,
           fields["price"],
           fields["stock"],
@@ -731,14 +731,13 @@ router.post("/editBook/:id", (req, res) => {
         });
       }
       let sql =
-        "UPDATE tb_book SET group_book_id = ?, isbn = ?, author = ?, book_name = ?, detail = ?,status = ?, img = ? ,price = ? , stock = ?WHERE id = ?";
+        "UPDATE tb_book SET group_book_id = ?, isbn = ?, author = ?, book_name = ?, detail = ?, img = ? ,price = ? , stock = ?WHERE id = ?";
       let params = [
         fields["group_book_id"],
         fields["isbn"],
         fields["author"],
         fields["book_name"],
         fields["detail"],
-        fields["status"],
         imgFileName, // ใช้รูปใหม่ หรือรูปเก่าที่มี
         fields["price"],
         fields["stock"],
