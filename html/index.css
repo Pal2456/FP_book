@@ -26,4 +26,37 @@
     font-weight: 400;
     font-style: normal;
 }
-  
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(50%) sepia(60%) saturate(500%) hue-rotate(120deg); /* Custom green arrow color */
+    background-size: contain; /* Better rendering */
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    opacity: 0.8; /* Slight transparency */
+    transition: opacity 0.3s;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1; /* Fully visible on hover */
+}
+
+.card-text{
+    margin: 0; /* Removes margins between paragraphs */
+    line-height: 1.5;
+  }
+
+#carousel-card {
+    transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+#carousel-card:hover {
+    transform: scale(1.02); /* Slightly larger on hover */
+}
+
+#carousel-card .btn {
+    border-radius: 20px; /* Rounded buttons */
+}

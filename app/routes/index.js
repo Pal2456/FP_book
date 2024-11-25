@@ -1069,7 +1069,7 @@ router.get("/borrowHistory", (req, res) => {
 });
 
 //ลบข้อมูลการยืมทั้งหมดในระบบและแสดงผลหน้า "borrowHistory"
-router.get("/deleteborrowHistory", (req, res) => {
+/*router.get("/deleteborrowHistory", (req, res) => {
   let sql = "DELETE FROM tb_borrow";
   conn.query(sql, (err, result) => {
     if (err) throw err;
@@ -1086,7 +1086,7 @@ router.get("/deleteborrowHistory/:id", (req, res) => {
     res.redirect("/borrowHistory");
   });
 });
-//isLogin เพื่อตรวจสอบว่าผู้ใช้เข้าสู่ระบบอยู่หรือไม่ และ fetchGroupBooks เพื่อดึงข้อมูลกลุ่มหนังสือจาก database
+//isLogin เพื่อตรวจสอบว่าผู้ใช้เข้าสู่ระบบอยู่หรือไม่ และ fetchGroupBooks เพื่อดึงข้อมูลกลุ่มหนังสือจาก database*/
 
 router.get("/reserveHistory", (req, res) => {
   let sql =
@@ -1245,10 +1245,172 @@ router.post("/remove-cart", (req, res) => {
 
 
 
-router.post("/complete-payment", async (req, res) => {
-  req.flash("success", "Payment completed successfully.");
-  res.redirect("/cart");
+
+router.post("/create-checkout-session", async (req, res) => {
+  // สร้าง checkout session สำหรับการชำระเงินกับ Stripe
+  //1. ตรวจสอบว่าตะกร้าสินค้าว่างหรือไม่
+  //2. ดึงข้อมูลหนังสือที่อยู่ในตะกร้าสินค้า
+  //3. ตรวจสอบว่าหนังสือมีใน stock หรือไม่
+  //4. ตรวจสอบว่ามีคูปองหรือไม่
+  //5. หาค่าส่วนลดจากคูปอง
+  //6. สร้าง checkout session สำหรับการชำระเงินกับ Stripe
+  //7. ส่ง checkout session ไปที่หน้า success หรือ cancel ตามเงื่อนไข
+  try {
+    const conn = require("./connect2");
+    const cart = req.session.cart || []; // ดึงข้อมูลตะกร้าสินค้าจาก session หรือสร้างตะกร้าใหม่ถ้าไม่มี
+    const { couponCode } = req.body; // รับค่า couponCode จาก form ที่ส่งมา
+
+    if (cart.length === 0) return res.status(400).send("Cart is empty");
+    // ถ้าตะกร้าสินค้าว่าง ส่งข้อความว่า "Cart is empty" พร้อม status 400
+
+    const bookIds = cart.map((item) => item.bookId);
+    // ใช้ function map กำหนดให้ค่า item เป็น parameter ในการวนลูปหา bookId ที่อยู่ในตะกร้าสินค้า และเก็บค่า bookId ที่ได้ไว้ใน bookIds
+
+    const [books] = await conn.query("SELECT * FROM tb_book WHERE id IN (?)", [
+      bookIds,
+    ]);
+    // [books] เก็บค่า query ที่ข้อมูลหนังสือที่มีอยู่ในตะกร้าสินค้า จาก bookIds ที่ได้จากการวนลูป
+
+    /* ให้ stockErrors เป็น array เพื่อเก็บข้อความเกี่ยวกับ Error ที่เกิดขึ้นเมื่อหนังสือไม่มีใน stock หรือ stock ไม่เพียงพอ
+        ใช้ cart.forEach ให้ carts เป็น parameter 
+        จากนั้นกำหนด book ให้ b เป็น parameter เทียบกับ bookId ที่อยู่ใน carts กับ bookId ที่อยู่ใน books
+        เช่นใน cart มี bookId [1, 2, 3] และ books มี bookId [1, 2] จะเหลือ bookId ที่ไม่มีใน books คือ [3]
+        ถ้าหนังสือไม่มีใน stock หรือ stock ไม่เพียงพอ ให้เพิ่มข้อความเกี่ยวกับ Error นั้นเข้าไปใน stockErrors 
+        ใช้ book_name ดึงชื่อหนังสือ ถ้า book มีค่า ใช้ book.stock ใน stockErrors ถ้าไม่มีใช้ 0
+        
+    */
+    const stockErrors = [];
+    cart.forEach((carts) => {
+      const book = books.find((b) => b.id === carts.bookId);
+      if (!book || book.stock < carts.quantity) {
+        stockErrors.push(
+          `Insufficient stock for "${book.book_name}". Only ${
+            book ? book.stock : 0
+          } left.`
+        );
+      }
+    });
+
+    // ถ้า stockErrors มีค่ามากกว่า 0 ให้แสดงข้อความ Error และ redirect ไปหน้า cart
+    if (stockErrors.length > 0) {
+      req.flash("error", stockErrors);
+      return res.redirect("/cart");
+    }
+
+    let totalDiscount = 0;
+    let promotions = [];
+
+    // ถ้ามี couponCode มีค่าจาก form ที่ส่งมา
+    if (couponCode) {
+      // query หาค่าว่า มีคูปองใน couponCode ว่ามีหรือไม่มี โดยให้ วันที่เริ่มกับวันที่หมดอายุ เทียบกับเวลาปัจจุบัน และจำนวนหนังสือต้องมากกว่า 0 จึงเก็บค่าที่ได้ไว้ใน promotionResults
+      const [promotionResults] = await conn.query(
+        "SELECT * FROM tb_promotion WHERE coupon_code = ? AND startdate <= NOW() AND enddate >= NOW() AND quantity > 0",
+        [couponCode]
+      );
+      // ถ้า promotionResults มีค่า
+      if (promotionResults.length > 0) {
+        req.session.couponCode = couponCode; //เก็บค่า couponCode ใน session ไปใช้ใน page success
+        promotions = promotionResults; // ให้ promotions เก็บค่า promotionResults
+      } else {
+        req.flash("error", "Invalid or expired coupon code or quantity is 0");
+        return res.redirect("/cart");
+      }
+    }
+
+    /*  lineItems ใช้ map เพื่อวนลูปผ่านทุกๆ หนังสือใน array books
+        ให้ item ใน carts เป็น parameter ในการวนลูปหา bookId ที่ตรงกับ bookId ที่อยู่ใน books 
+        โดย unitAmount เป็นค่าราคาที่จะใช้กับ stripe จาก book.price
+        ถ้ามีโปรโมชั่นที่เป็นประเภท discount ให้คำนวณราคาใหม่โดยการลดราคาจาก unitAmount ด้วย discount เป็น % ที่ได้จากโปรโมชั่น
+        totalDiscount คำนวณเฉพาะส่วนที่ลดราคา
+        จากนั้น return ค่า lineItems ออกไป
+        ค่าใน cartItem ก็จะมีค่า [{bookId: bookId, quantity: 1}] 
+        ค่าใน lineitems ก็จะมี [{price_data: {currency: "thb", product_data: {name: book.book_name}, unit_amount: unitAmount}, quantity: cartItem.quantity}]
+    */
+
+    const lineItems = books.map((book) => {
+      const cartItem = cart.find((item) => item.bookId === book.id);
+      let unitAmount = Math.round(parseFloat(book.price) * 100);
+
+      const discountPromo = promotions.find(
+        (promo) => promo.type === "discount"
+      );
+      if (discountPromo) {
+        unitAmount = Math.round(
+          unitAmount - unitAmount * (discountPromo.discount / 100)
+        );
+        totalDiscount +=
+          (parseFloat(book.price) - unitAmount / 100) * cartItem.quantity;
+      }
+
+      return {
+        price_data: {
+          currency: "thb",
+          product_data: { name: book.book_name },
+          unit_amount: unitAmount,
+        },
+        quantity: cartItem.quantity,
+      };
+    });
+
+    //วนลูปใช้ promo เป็น parameter ในการวนลูปหาโปรโมชั่นที่เป็นประเภท free_book ใน promotion ที่วนลูปเพราะอาจมีหลายโปรโมชั่น
+    // ให้ freeBookResults เป็นค่าที่ได้จากการ query หาข้อมูลหนังสือที่มีอยู่ในโปรโมชั่นที่แถมฟรีเเละมี stock มากกว่า 0
+    for (const promo of promotions) {
+      if (promo.book_id && promo.type === "free_book") {
+        const [freeBookResults] = await conn.query(
+          `SELECT tb_book.*, tb_promotion.quantity AS promo_quantity 
+                FROM tb_book 
+                JOIN tb_promotion ON tb_book.id = tb_promotion.book_id 
+                WHERE tb_book.id = ? AND tb_book.stock > 0 AND tb_promotion.quantity > 0`,
+          [promo.book_id]
+        );
+
+        //ถ้าม freeBookResults มีค่า
+        if (freeBookResults.length > 0) {
+          const freeBook = freeBookResults[0]; //เอาค่า freebookResults ที่ได้มาเก็บไว้ใน freeBook
+
+          //เพิ่มข้อมูลของหนังสือที่ฟรีเข้าไปใน lineItems
+          lineItems.push({
+            price_data: {
+              currency: "thb",
+              product_data: { name: freeBook.book_name },
+              unit_amount: 0,
+            },
+            quantity: 1,
+          });
+        } else {
+          req.flash(
+            "error",
+            `Free book with ID ${promo.book_id} is not available`
+          );
+          return res.redirect("/cart");
+        }
+      }
+    }
+
+    // สร้าง checkout session สำหรับการชำระเงินกับ Stripe
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card", "promptpay"], // รองรับการชำระเงินด้วยบัตรเครดิตหรือ PromptPay
+      line_items: lineItems,
+      mode: "payment",
+      success_url: `${req.protocol}://${req.get(
+        "host"
+      )}/success?session_id={CHECKOUT_SESSION_ID}`,
+      // ถ้า success ให้ redirect ไปยังหน้า success พร้อมกับส่ง session_id
+      cancel_url: `${req.protocol}://${req.get(
+        "host"
+      )}/cancel?session_id={CHECKOUT_SESSION_ID}`,
+      // ถ้า cancel ให้ redirect ไปยังหน้า cancel พร้อมกับส่ง session_id
+    });
+
+    res.redirect(303, session.url);
+  } catch (error) {
+    console.error("Error creating checkout session:", error);
+    res.status(500).send("An error occurred while creating a session.");
+  }
 });
+
+
+
 
 // Simulate Failed Payment
 router.post("/fail-payment", (req, res) => {
