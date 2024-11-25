@@ -1243,6 +1243,8 @@ router.post("/remove-cart", (req, res) => {
   res.redirect("/cart");
 });
 
+
+
 router.post("/complete-payment", async (req, res) => {
   req.flash("success", "Payment completed successfully.");
   res.redirect("/cart");
@@ -1253,81 +1255,8 @@ router.post("/fail-payment", (req, res) => {
   req.flash("error", "Payment failed. Please try again.");
   res.redirect("/cart");
 });
-// coupon code
-router.post("/apply-coupon", async (req, res) => {
-  try {
-    const conn = require("./connect2");
-    const cart = req.session.cart || []; // Get cart from session or initialize if empty
-    const { couponCode } = req.body; // Get coupon code from the form
 
-    if (cart.length === 0) {
-      req.flash("error", "Your cart is empty.");
-      return res.redirect("/cart");
-    }
 
-    if (!couponCode) {
-      req.flash("error", "Please provide a valid coupon code.");
-      return res.redirect("/cart");
-    }
-
-    // Query the promotion table for a valid coupon
-    const [promotionResults] = await conn.query(
-      "SELECT * FROM tb_promotion WHERE coupon_code = ? AND startdate <= NOW() AND enddate >= NOW() AND quantity > 0",
-      [couponCode]
-    );
-
-    if (promotionResults.length > 0) {
-      const promotion = promotionResults[0];
-
-      // Apply discount for "discount" type promotion
-      if (promotion.type === "discount") {
-        let totalDiscount = 0;
-        cart.forEach((item) => {
-          const discount = (item.price * promotion.discount) / 100;
-          item.price -= discount; // Apply discount to item price
-          totalDiscount += discount * item.quantity; // Calculate total discount
-        });
-
-        req.session.totalDiscount = totalDiscount; // Save total discount to session
-        req.flash("success", `Coupon applied successfully! You saved ${totalDiscount.toFixed(2)} THB.`);
-      }
-
-      // Add free book for "free_book" type promotion
-      if (promotion.type === "free_book") {
-        const [freeBookResults] = await conn.query(
-          "SELECT * FROM tb_book WHERE id = ? AND stock > 0",
-          [promotion.book_id]
-        );
-
-        if (freeBookResults.length > 0) {
-          const freeBook = freeBookResults[0];
-          cart.push({
-            bookId: freeBook.id,
-            book_name: freeBook.book_name,
-            price: 0, // Free book has no price
-            quantity: 1,
-            img: freeBook.img,
-          });
-
-          req.flash("success", `Coupon applied successfully! You received a free book: ${freeBook.book_name}.`);
-        } else {
-          req.flash("error", "The free book associated with this coupon is out of stock.");
-        }
-      }
-
-      req.session.couponCode = couponCode; // Save coupon code to session
-      req.session.cart = cart; // Update cart in session
-    } else {
-      req.flash("error", "Invalid or expired coupon code.");
-    }
-
-    res.redirect("/cart");
-  } catch (error) {
-    console.error("Error applying coupon:", error);
-    req.flash("error", "An error occurred while applying the coupon.");
-    res.redirect("/cart");
-  }
-});
 
 
 
