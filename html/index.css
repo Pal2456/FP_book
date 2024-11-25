@@ -57,6 +57,6 @@
     transform: scale(1.02); /* Slightly larger on hover */
 }
 
-#carousel-card .btn {
+#carousel-card.btn {
     border-radius: 20px; /* Rounded buttons */
 }
