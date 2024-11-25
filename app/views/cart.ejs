@@ -53,30 +53,15 @@
                 </table>
               </div>
 
-        <div class="text-end mt-3">
-          <h4>Total Books: <%= totalQuantity %> | Total Price: <%= totalPrice.toFixed(2) %> THB</h4>
-        
-          <!-- Coupon Input on Top and Buttons Below -->
-          <div class="d-flex flex-column align-items-end mt-3">
-            <form action="/apply-coupon" method="POST" class="mb-3">
-              <input 
-                id="coupon" 
-                type="text" 
-                class="form-control w-50" 
-                name="couponCode" 
-                placeholder="Enter Coupon Code" 
-              />
-            </form>
-            <div class="d-flex justify-content-end">
-              <form action="/create-checkout-session" method="POST" class="me-2">
-                <button type="submit" class="btn btn-success btn-lg w-100">Simulate Complete Payment</button>
-              </form>
-              <form action="/fail-payment" method="POST">
-                <button type="submit" class="btn btn-danger btn-lg w-100">Simulate Failed Payment</button>
-              </form>
-            </div>
-          </div>
-        </div>
+              <div class="text-end mt-3">
+                <h4>Total Books: <%= totalQuantity %> | Total Price: <%= totalPrice.toFixed(2) %> THB</h4>
+      
+                
+                <form id="checkout-form" action="/create-checkout-session" method="POST" class="d-flex flex-column align-items-end">
+                  <input id="coupon" type="text" class="form-control w-25 mb-2" name="couponCode" placeholder="Enter Coupon Code" />
+                  <button type="submit" class="btn btn-success">Proceed to Checkout</button>
+                </form>
+              </div>
         
         
       <% } else { %>
