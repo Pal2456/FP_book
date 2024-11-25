@@ -6,7 +6,8 @@
         <main>
           <section class="card bg-white shadow rounded">
             <div class="card-body">
-              <h2 class="mt-2 text-success text-center special-elite-regular">- BOOKS -</h2>
+              <!-- Title with Updated Color -->
+              <h2 class="mt-2 text-center special-elite-regular" style="color: #074bb1;">- Explore Our Store -</h2>
               <div class="mt-5">
                 <div class="row g-3">
                   <% books.forEach((book)=> { %>
@@ -21,17 +22,14 @@
                           <p class="text-center text-secondary mb-1" style="font-size: 14px;">
                             Author: <%= book.author %>
                           </p>
-                          <p class="text-center text-primary mb-1" style="font-size: 14px;">
+                          <p class="text-center text-primary mb-3" style="font-size: 14px;">
                             <%= book.price %> THB
-                          </p>
-                          <p class="text-center <%= book.status === 'Available' ? 'text-success' : (book.status === 'Reserved' ? 'text-warning' : 'text-danger') %>"
-                            style="font-size: 14px;">
-                            Status: <%= book.status %>
                           </p>
                           <div class="mt-auto text-center">
                             <form action="/add-to-cart" method="POST" class="d-inline">
                               <input type="hidden" name="bookId" value="<%= book.id %>">
-                              <button type="submit" class="btn btn-success btn-sm mt-2">Add to Cart</button>
+                              <button type="submit" class="btn btn-sm mt-2"
+                                style="background-color: #074bb1; color: #fff;">Add to Cart</button>
                             </form>
                           </div>
                         </div>

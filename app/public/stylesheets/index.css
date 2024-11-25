@@ -29,7 +29,7 @@ h2[title="login"] {
 /* Type Selector*/
 h2 {
   /* กำหนดให้ h2 มีสีเขียว และ font ขนาด 30px และจัดตำแหน่งข้อความตรงกลาง */
-  color: green;
+  color: #074bb1;
   font-size: 30px;
   text-align: center;
 }
@@ -65,8 +65,8 @@ h2::first-line {
 
 .page-link {
   background-color: white;
-  border-color: green;
-  color: green;
+  border-color: blue;
+  color: blue;
 }
 
 /*Pseudo-Class selector*/
@@ -78,8 +78,8 @@ h2::first-line {
 }
 
 .page-item.active .page-link {
-  background-color: darkturquoise;
-  border-color: darkturquoise;
+  background-color: #074bb1;
+  border-color: #074bb1;
   color: white;
 }
 
