@@ -1243,7 +1243,16 @@ router.post("/remove-cart", (req, res) => {
   res.redirect("/cart");
 });
 
+router.post("/complete-payment", async (req, res) => {
+  req.flash("success", "Payment completed successfully.");
+  res.redirect("/cart");
+});
 
+// Simulate Failed Payment
+router.post("/fail-payment", (req, res) => {
+  req.flash("error", "Payment failed. Please try again.");
+  res.redirect("/cart");
+});
 
 router.post("/create-checkout-session", async (req, res) => {
   // สร้าง checkout session สำหรับการชำระเงินกับ Stripe
