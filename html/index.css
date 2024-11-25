@@ -49,14 +49,14 @@
     line-height: 1.5;
   }
 
-.card {
+#carousel-card {
     transition: transform 0.3s ease-in-out; /* Smooth hover effect */
 }
 
-.card:hover {
+#carousel-card:hover {
     transform: scale(1.02); /* Slightly larger on hover */
 }
 
-.card .btn {
+#carousel-card .btn {
     border-radius: 20px; /* Rounded buttons */
 }
