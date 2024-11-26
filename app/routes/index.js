@@ -15,15 +15,15 @@ const { error } = require("console");
 let secretCode = process.env.SECRET_CODE;
 let dayFormat = process.env.DAY_FORMAT;
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-// ใช้ dotenv เพื่อเรียกใช้งานไฟล์ .env ที่เก็บข้อมูลที่เป็นค่า const ที่ไม่ควรเปิดเผย
+// Using dotenv to access the .env file that stores constant data that should not be exposed
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 
 router.use(
-  //roiter สร้าง session ของผู้ใช้ โดยใช้ secret code ที่เก็บไว้ในไฟล์ .env และกำหนดเวลาในการเก็บ session ที่ 30 วัน
-  // และ cookie ใช้ในการเก็บ session ที่เก็บไว้ในเบราว์เซอร์
+  // The router creates a user session using a secret code stored in the .env file and sets the session storage duration to 30 days
+  // The cookie is used to store the session in the browser
   session({
     secret: process.env.SECRET_CODE,
     resave: false,
@@ -1184,12 +1184,12 @@ router.get("/success", async (req, res) => {
 
       const orderId = orderResult.insertId; //เอาค่า id ที่พึ่งเพิ่มเข้าไปในตาราง tb_order มาเก็บไว้ใน orderId
 
-      // ใช้ข้อมูล จาก bookId และ quantity จาก cart
-      // ให้ unitPrice เป็นค่าราคาของหนังสือที่อยู่ใน bookPriceMap[bookId]
-      // เช่น bookPriceMap = {1: 100, 2: 200} จะได้ unitPrice จาก bookPriceMap[1] = 100 หรือ bookPriceMap[2] = 200
-      // และใส่ข้อมูลใน query orderId จาก  orderResult.insertId ที่ใส่ล่าสุด เพื่อให้ tb_order_items รู้ว่าข้อมูลอยู่ใน order ไหน
-      // bookId จาก cart และ quantity จาก cart
-      // และ unitPrice จาก bookPriceMap[bookId]
+// Use the bookId and quantity from the cart
+// Set unitPrice to the price of the book as found in bookPriceMap[bookId]
+// For example, if bookPriceMap = {1: 100, 2: 200}, then unitPrice will be bookPriceMap[1] = 100 or bookPriceMap[2] = 200
+// Insert this data into the query for tb_order_items with the orderId from the most recent orderResult.insertId
+// This links the orderId from the cart to its respective order in tb_order_items
+// The fields used are bookId from the cart, quantity from the cart, and unitPrice from bookPriceMap[bookId]
       for (const { bookId, quantity } of cart) {
         const unitPrice = bookPriceMap[bookId];
         await conn.query(
@@ -1553,12 +1553,23 @@ router.get("/orderhistoryadmin", async (req, res) => {
       return acc;
     }, {});
 
-    // จากนั้นก็รวมข้อมูล address ของ user กับ order และ order_items ให้เป็นข้อมูลเดียวกันใน orderMap
-    // โดยใช้ order_id ใน order และ order_id ใน order_items ในการเชื่อมข้อมูล เทียบ order_id
-    // ส่วน address ใช้ข้อมูล address จาก addressMap ที่ได้จากการ query ข้อมูล address ของ user
-    //ข้อมูลใน map ก็จะมีข้อมูล [order_id, user_id, user_name, order_date, total_amount, status, items, address]
-    //เช่น {order_id: 1, user_id: 1, user_name: "John Doe", order_date: "2022-01-01", total_amount: 100, status: "Completed", 
-    //items: [{ book_id: 1, quantity: 1, unit_price: 100, book_name: "Book 1", img: "book1.jpg" }], address: "123 ถ. สุขุมวิท 71"}
+// Then combine the user's address information with the order and order_items into a single data structure, orderMap
+// Use order_id in the orders and order_id in the order_items to link the data by matching order_id
+// The address is retrieved from addressMap, which was queried from the user's address data
+// The data in the map will have the structure [order_id, user_id, user_name, order_date, total_amount, status, items, address]
+// For example: 
+// {
+//   order_id: 1, 
+//   user_id: 1, 
+//   user_name: "John Doe", 
+//   order_date: "2022-01-01", 
+//   total_amount: 100, 
+//   status: "Completed",
+//   items: [
+//     { book_id: 1, quantity: 1, unit_price: 100, book_name: "Book 1", img: "book1.jpg" }
+//   ], 
+//   address: "123 Sukhumvit 71"
+// }
     const orderMap = orders.map((order) => {
       return {
         ...order,
@@ -1626,7 +1637,7 @@ router.get("/editPromotion/:id", (req, res) => {
 
 
 router.post("/editPromotion/:id", (req, res) => {
-  //แก้ไขข้อมูลโปรโมชั่นใน database โดยใช้ id ที่ระบุในพารามิเตอร์ของ URL
+  // Update promotion data in the database using the ID specified in the URL parameter
   let sql =
     "UPDATE tb_promotion SET ? WHERE id = ?";
 
@@ -1638,7 +1649,7 @@ router.post("/editPromotion/:id", (req, res) => {
   });
 });
 
-//ลบข้อมูลผู้ใช้ใน database โดยใช้ id ที่ระบุในพารามิเตอร์ของ URL และแสดงผลหน้า user
+// Delete user data from the database using the ID specified in the URL parameter and redirect to the user page
 router.get("/deletePromotion/:id", (req, res) => {
   let sql = "DELETE FROM tb_promotion WHERE id = ?";
   let params = req.params.id;
