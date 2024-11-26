@@ -5,7 +5,7 @@
       <div class="container mt-5">
         <main class="card m-4 mt-10 bg-white shadow rounded">
           <div class="card-body">
-            <h2 class="mt-2 text-primary text-center special-elite-regular">- MY CART -</h2>
+            <h2 class="mt-2">- MY CART -</h2>
             <% if (cart && cart.length> 0) { %>
               <div class="table-responsive">
                 <table class="table table-hover">
@@ -66,7 +66,7 @@
         
       <% } else { %>
         <p class="text-center mt-5">
-          Your cart is empty. <a href="/home" class="text-success">Continue browsing</a>
+          Your cart is empty. <a href="/home" class="mt-2">Continue browsing</a>
         </p>
       <% } %>
     </div>
