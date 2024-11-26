@@ -263,6 +263,7 @@ router.get("/register", (req, res) => {
 
 router.post("/register", (req, res) => {
   //ตรวจสอบว่าผู้ใช้ได้กรอกข้อมูลที่จำเป็นทั้งหมดหรือไม่
+  req.body["name"] = `${req.body["firstName"]} ${req.body["lastName"]}`;
   if (
     !req.body["name"] ||
     !req.body["usr"] ||
